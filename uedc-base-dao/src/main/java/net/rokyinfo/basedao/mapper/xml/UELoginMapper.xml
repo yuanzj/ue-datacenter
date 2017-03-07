@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+    <!DOCTYPE mapper   
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.rokyinfo.basedao.mapper.UELoginMapper">
+
+	<resultMap type="net.rokyinfo.basedao.entity.UELogin" id="ueLoginResultMap">
+
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+
+        <result property="ueSn" column="ue_sn"/>
+        <result property="ccSn" column="cc_sn"/>
+        <result property="imsi" column="imsi"/>
+        <result property="carStatus" column="car_status"/>
+        <result property="loginResult" column="login_result"/>
+
+	</resultMap>
+
+    <insert id="addUELogin" parameterType="net.rokyinfo.basedao.entity.UELogin" keyProperty="id" useGeneratedKeys="true">
+        insert into t_ue_login_report
+        (ue_sn, cc_sn, imsi, car_status, login_result, create_time)
+        values
+        (#{ueSn}, #{ccSn}, #{imsi}, #{carStatus}, #{loginResult}, #{createTime})
+    </insert>
+
+    <insert id="batchInsertLogin" >
+        insert into t_ue_login_report
+        (ue_sn, cc_sn, imsi, car_status, login_result, create_time)
+        values
+        <foreach collection="list" item="login" index="index"  separator=",">
+            (#{login.ueSn}, #{login.ccSn}, #{login.imsi}, #{login.carStatus}, #{login.loginResult}, #{login.createTime})
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+    <!DOCTYPE mapper   
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.rokyinfo.basedao.mapper.UERK600Mapper">
+
+	<resultMap type="net.rokyinfo.basedao.entity.UERK600" id="ueRK600ResultMap">
+
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="ueSn" column="ue_sn"/>
+        <result property="ueType" column="ue_type"/>
+        <result property="imei" column="imei"/>
+
+        <result property="exportTime" column="export_time"/>
+        <result property="lifeStatus" column="life_status"/>
+        <result property="activateTime" column="active_time"/>
+
+        <association property="firm" column="firm_id" javaType="net.rokyinfo.basedao.entity.UEFirm" select="net.rokyinfo.basedao.mapper.UEFirmMapper.getUEFirmById">
+        </association>
+        <association property="sim" column="sim_id" javaType="net.rokyinfo.basedao.entity.UESim" select="net.rokyinfo.basedao.mapper.UESimMapper.getUESimById">
+        </association>
+        <association property="ueBasicInfo" column="cc_id" javaType="net.rokyinfo.basedao.entity.UEBasicInfo" select="net.rokyinfo.basedao.mapper.UEBasicInfoMapper.getUEBasicInfoById">
+        </association>
+        <association property="dbMeta" column="db_id" javaType="net.rokyinfo.basedao.entity.DBMeta" select="net.rokyinfo.basedao.mapper.DBMetaMapper.getDBMetaById">
+        </association>
+
+	</resultMap>
+
+</mapper>

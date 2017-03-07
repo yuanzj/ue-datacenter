@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+    <!DOCTYPE mapper   
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.rokyinfo.basedao.mapper.UEBasicInfoMapper">
+
+	<resultMap type="net.rokyinfo.basedao.entity.UEBasicInfo" id="ueBasicInfoResultMap">
+
+        <result property="id" column="id"/>
+        <result property="ueSn" column="ue_sn"/>
+        <result property="ueType" column="ue_type"/>
+        <result property="status" column="status"/>
+        <result property="lifeStatus" column="life_status"/>
+        <result property="activedDate" column="actived_date"/>
+        <result property="createTime" column="create_time"/>
+
+
+        <association property="ueFirm" column="firm_id" javaType="net.rokyinfo.basedao.entity.UEFirm" select="net.rokyinfo.basedao.mapper.UEFirmMapper.getUEFirmById">
+        </association>
+
+
+	</resultMap>
+
+    <select id="getUEBasicInfoById" resultMap="ueBasicInfoResultMap">
+        select * from t_ue_basic_info where id=#{id}
+    </select>
+	
+	<select id="getUEBasicInfoBySn" resultMap="ueBasicInfoResultMap">
+		select * from t_ue_basic_info where ue_sn=#{ueSn}
+	</select>
+	
+	<update id="updateOwner">
+		update t_ue_basic_info set
+        owner_id=#{userId}, actived_date=(ifnull(actived_date, now()))
+		where id = #{ueId}
+	</update>
+
+    <insert id="addUEBasicInfo" parameterType="net.rokyinfo.basedao.entity.UEBasicInfo" keyProperty="id" useGeneratedKeys="true">
+        insert into t_ue_basic_info
+        (ue_sn, ue_type, firm_id, status, life_status, owner_id, actived_date, bluetooth_id, create_time)
+        values
+        (#{ueSn}, #{ueType}, #{ueFirm.id}, #{status}, #{lifeStatus}, #{owner.id},  #{activedDate}, #{ueBlueTooth.id}, #{createTime})
+    </insert>
+
+    <select id="getAllRentalCars" resultMap="ueBasicInfoResultMap">
+        select * from t_ue_basic_info where rental_flag=1
+    </select>
+
+    <select id="getRentalCarBySn" resultMap="ueBasicInfoResultMap">
+        select * from t_ue_basic_info where rental_flag=1 and ue_sn=#{ueSn}
+    </select>
+
+</mapper>

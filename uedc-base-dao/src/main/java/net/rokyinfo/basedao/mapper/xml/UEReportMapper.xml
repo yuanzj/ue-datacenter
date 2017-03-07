@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+    <!DOCTYPE mapper   
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="net.rokyinfo.basedao.mapper.UEReportMapper">
+
+	<resultMap type="net.rokyinfo.basedao.entity.UEReport" id="ueReportResultMap">
+
+        <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+
+        <result property="ueSn" column="ue_sn"/>
+        <result property="ccSn" column="cc_sn"/>
+        <result property="lon" column="lon"/>
+        <result property="lat" column="lat"/>
+        <result property="ve" column="ve"/>
+        <result property="gpsGsmBat" column="gps_gsm_bat"/>
+        <result property="lonLatFlag" column="lon_lat_flag"/>
+        <result property="travelMiles" column="travel_miles"/>
+        <result property="remainCapacity" column="remain_capacity"/>
+        <result property="voltage" column="voltage"/>
+        <result property="current" column="current"/>
+        <result property="carFault" column="car_fault"/>
+        <result property="carStatus" column="car_status"/>
+        <result property="mcc" column="mcc"/>
+        <result property="mnc" column="mnc"/>
+        <result property="lac" column="lac"/>
+        <result property="cid" column="cid"/>
+        <result property="warn" column="warn"/>
+
+        <result property="travelStatus" column="travel_status"/>
+
+	</resultMap>
+
+    <insert id="addUEReport" parameterType="net.rokyinfo.basedao.entity.UEReport" keyProperty="id" useGeneratedKeys="true">
+        insert into t_ue_report
+        (ue_sn, cc_sn, lon, lat, ve, gps_gsm_bat, lon_lat_flag, travel_miles, remain_capacity, voltage, current, car_fault, car_status, mcc, mnc, lac, cid, warn, create_time, travel_status)
+        values
+        (#{ueSn}, #{ccSn}, #{lon}, #{lat}, #{ve}, #{gpsGsmBat}, #{lonLatFlag}, #{travelMiles},
+        #{remainCapacity}, #{voltage}, #{current}, #{carFault}, #{carStatus}, #{mcc}, #{mnc}, #{lac}, #{cid}, #{warn}, #{createTime}, #{travelStatus})
+    </insert>
+
+    <select id="getDayReports" resultMap="ueReportResultMap">
+        select * from t_ue_report where ue_sn=#{ueSn} and date_format(create_time, '%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d') and lon!=0 and lat!=0 order by create_time asc
+    </select>
+
+    <select id="getDayReportsWithZero" resultMap="ueReportResultMap">
+        select * from t_ue_report where ue_sn=#{ueSn} and date_format(create_time, '%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d') order by create_time asc
+    </select>
+
+    <select id="getDayReportsWithZeroCCSn" resultMap="ueReportResultMap">
+        select * from t_ue_report where cc_sn=#{ccSn} and date_format(create_time, '%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d') order by create_time asc
+    </select>
+
+    <select id="getAllDayReports" resultMap="ueReportResultMap">
+        select * from t_ue_report where date_format(create_time, '%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d') and lon!=0 and lat!=0 order by ue_sn asc, create_time asc
+    </select>
+
+    <select id="getAllDayReportsWithZero" resultMap="ueReportResultMap">
+        select * from t_ue_report where date_format(create_time, '%Y-%m-%d') = date_format(#{date}, '%Y-%m-%d') order by cc_sn asc, create_time asc
+    </select>
+
+    <select id="getUEReport" resultMap="ueReportResultMap">
+        select * from t_ue_report where ue_sn=#{ueSn} and lon!=0 and lat!=0 order by create_time asc
+    </select>
+
+    <select id="getUEReportWithZero" resultMap="ueReportResultMap">
+        select * from t_ue_report where ue_sn=#{ueSn} order by create_time asc
+    </select>
+
+    <select id="getUEReportWithZeroCCSn" resultMap="ueReportResultMap">
+        select * from t_ue_report where cc_sn=#{ccSn} and create_time between #{startTime} and #{endTime} order by create_time asc
+    </select>
+
+    <select id="getTimeUEReport" resultMap="ueReportResultMap">
+        select * from t_ue_report where ue_sn=#{ueSn} and create_time between #{startTime} and #{endTime} and lon!=0 and lat!=0 order by create_time asc
+    </select>
+
+    <select id="getTimeUEReportCCSn" resultMap="ueReportResultMap">
+        select * from t_ue_report where cc_sn=#{ccSn} and create_time between #{startTime} and #{endTime} and lon!=0 and lat!=0 order by create_time asc
+    </select>
+
+    <update id="updateTravelStatus">
+        update  t_ue_report set travel_status=#{travelStatus} where id=#{reportId}
+    </update>
+
+    <insert id="batchInsertReport" >
+        insert into t_ue_report
+        (ue_sn, cc_sn, lon, lat, ve, gps_gsm_bat, lon_lat_flag, travel_miles, remain_capacity, voltage, current, car_fault, car_status, mcc, mnc, lac, cid, warn, create_time, travel_status) values
+        <foreach collection="list" item="location" index="index"  separator=",">
+            (#{location.ueSn}, #{location.ccSn}, #{location.lon}, #{location.lat}, #{location.ve}, #{location.gpsGsmBat}, #{location.lonLatFlag}, #{location.travelMiles},
+            #{location.remainCapacity}, #{location.voltage}, #{location.current}, #{location.carFault}, #{location.carStatus}, #{location.mcc}, #{location.mnc}, #{location.lac}, #{location.cid},
+            #{location.warn}, #{location.createTime}, #{location.travelStatus})
+        </foreach>
+    </insert>
+
+</mapper>
