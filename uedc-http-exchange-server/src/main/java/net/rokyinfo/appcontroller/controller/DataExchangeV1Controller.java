@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import javax.jms.JMSException;
 import java.util.Map;
@@ -103,7 +104,11 @@ public class DataExchangeV1Controller extends HttpBaseController {
         } catch (InvalidProtocolBufferException e) {
 
             e.printStackTrace();
-        } finally {
+        } catch (JedisConnectionException e){
+
+            e.printStackTrace();
+
+        }finally {
 
             shardedJedisPool.returnResource(jedis);
         }

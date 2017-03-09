@@ -111,7 +111,7 @@ public class T3PacketCommand extends net.rokyinfo.receive.handler.UEPacketComman
             ueReport.setCid(Integer.parseInt(uePacket.getParams()[3].split(":")[3]));
         }
 
-        if (uePacket.getParams().length > 13) {
+        if (uePacket.getParams().length > 13 && !StringUtils.isEmpty(uePacket.getParams()[13].trim())) {
             ueReport.setRemainCapacity(uePacket.getParams()[13]);
 
             ebikeBuilder.getBmsBuilder().setSOC(Integer.parseInt(uePacket.getParams()[13], 16));
@@ -177,7 +177,22 @@ public class T3PacketCommand extends net.rokyinfo.receive.handler.UEPacketComman
 
             if (uePacket.getParams().length > 14 && !StringUtils.isEmpty(uePacket.getParams()[14])) {
 
-                ebikeBuilder.getBmsBuilder().setSOH((Integer.parseInt(uePacket.getParams()[14])));
+                ebikeBuilder.getBmsBuilder().setSOH(Integer.parseInt(uePacket.getParams()[14],16));
+            }
+
+            if (uePacket.getParams().length > 15 && !StringUtils.isEmpty(uePacket.getParams()[15])) {
+
+                ebikeBuilder.getBmsBuilder().setChargeCount(Integer.parseInt(uePacket.getParams()[15],16));
+            }
+
+            if (uePacket.getParams().length > 16 && !StringUtils.isEmpty(uePacket.getParams()[16])) {
+
+                ebikeBuilder.getBmsBuilder().setT(Long.parseLong(uePacket.getParams()[16],16));
+            }
+
+            if (uePacket.getParams().length > 17 && !StringUtils.isEmpty(uePacket.getParams()[17])) {
+
+                ebikeBuilder.getBmsBuilder().setStatus(Long.parseLong(uePacket.getParams()[17],16));
             }
 
             jedis.set((RedisPrefixConstants.EBIKE_REPORT_PREFIX + uePacket.getCcSn()).getBytes(), ebikeBuilder.build().toByteArray());
